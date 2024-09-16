@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Taking App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-4">Note Taking App</h1>
+
+        <div id="note-form">
+            <input type="text" id="note-title" class="border p-2 w-full mb-4" placeholder="Note Title" />
+            <textarea id="note-content" class="border p-2 w-full mb-4" placeholder="Note Content"></textarea>
+            <button onclick="createNote()" class="bg-blue-500 text-white p-2 rounded">Create Note</button>
+        </div>
+
+        <div id="notes-container" class="mt-6"></div>
+    </div>
+
+    <script>
+        const apiUrl = 'http://localhost:8989/api/notes';
+
+        async function fetchNotes() {
+            const response = await fetch(apiUrl);
+            const notes = await response.json();
+            displayNotes(notes);
+        }
+
+        function displayNotes(notes) {
+            const container = document.getElementById('notes-container');
+            container.innerHTML = '';
+            notes.forEach(note => {
+                container.innerHTML += `
+                    <div class="bg-white p-4 mb-4 shadow rounded">
+                        <h2 class="font-bold">${note.title}</h2>
+                        <p>${note.content}</p>
+                        <button onclick="deleteNote('${note.id}')" class="bg-red-500 text-white p-2 rounded mt-2">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        async function createNote() {
+            const title = document.getElementById('note-title').value;
+            const content = document.getElementById('note-content').value;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, content })
+            });
+
+            if (response.ok) {
+                fetchNotes();
+            }
+        }
+
+        async function deleteNote(id) {
+            const response = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                fetchNotes();
+            }
+        }
+
+        window.onload = fetchNotes;
+    </script>
+</body>
+</html>
