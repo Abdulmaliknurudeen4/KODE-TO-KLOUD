@@ -28,7 +28,7 @@ use admin
  db.createUser(
    {
      user: "myUserAdmin",
-     pwd: passwordPrompt(), // or cleartext password
+     pwd: passwordPrompt(),
      roles: [
        { role: "userAdminAnyDatabase", db: "admin" },
        { role: "readWriteAnyDatabase", db: "admin" }
@@ -48,4 +48,4 @@ java -version
 
  mvn clean package -DskipTests -Dspring.profiles.active=dev
 
- java -jar JavaAppDemo-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+sudo java -jar JavaAppDemo-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
